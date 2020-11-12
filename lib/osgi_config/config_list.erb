@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<%
+  html_title = "OSGi Configuration List"
+%>
+
+<title><%= eh(html_title) %></title>
+<style>
+
+body {
+  color: #00202B;
+  background-color: #FCFCFC;
+  font-size: 10px;
+}
+
+.header_title {
+  border-bottom: 1px solid #EC9B59;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+}
+
+
+.config_title {
+  background-color: #9EB19E;
+  display: table;
+  width: 100%;
+}
+
+.config_name {
+  display: table-cell;
+  text-align: left;
+  padding-left: 0.5em;
+}
+
+.config_count {
+  color: #FCFCFC;
+  font-weight: normal;
+  dispkay: table-cell;
+  text-align: right;
+  padding-right: 0.5em;
+}
+
+.config_detail {
+  margin-left: 4em;
+}
+
+.param_title {
+  color: #164444;
+}
+
+.param_detail {
+  margin-left: 4em;
+}
+
+.footer_note {
+  border-top: 1px solid #EC9B59;
+  border-bottom: 0;
+  border-left: 0;
+  border-right: 0;
+  text-align: right;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1 class="header_title"><%= eh(html_title) %></h1>
+</header>
+
+<main>
+
+<%
+config_count = config_details.size
+config_details.sort_by {|pid| pid.values_at("title", "pid")}.each_with_index do |config, index|
+%>
+
+<section>
+  <h1 class="config_title"><div class="config_name"><%= eh(config["title"]) %></div>
+    <div class="config_count"></div></h1>
+  <div class="config_detail">
+  <p>pid = <%= eh(config["pid"]) %></p>
+  
+  <%
+    fpid = config["factoryPid"]
+    if !fpid.nil?
+  %>
+      <p>fpid = <%= eh(fpid) %></p>
+  <%
+    end
+  %>
+  <p>Description = <%= eh(config["description"]) %></p>
+  
+  <%
+    properties = config["properties"]
+    properties.each_pair do |param_key, param|
+  %>
+    <section>
+      <h1 class="param_title"><%= eh(param["name"]) %> (<%= eh(param_key) %>)</h1>
+      <div class="param_detail">
+        <p>Description = <%= eh(param["description"]) %></p>
+        
+        <%
+          values = param["values"]
+          if values.nil?
+            values = param["value"]
+          end
+        %>
+        
+        <p>Value(s) = <%= eh(values) %></p>
+      </div>
+    </section>
+  
+  <%
+    end
+  %>
+  </div> <!-- .config_detail -->
+  
+</section>
+
+<%
+end
+%>
+
+</main>
+
+<footer>
+<p class="footer_note">OSGi Configuration List Generator <%= ::OsgiConfig::VERSION %></p>
+</footer>
+
+<script>
+(function(){
+
+  const counters = document.querySelectorAll('.config_count');
+  const counters_length = counters.length;
+  for(let i = 0; i < counters_length; i++) {
+    counters[i].textContent = (i + 1) + "/" + counters_length; 
+  }
+  
+})();
+</script>
+
+</body>
+</html>
