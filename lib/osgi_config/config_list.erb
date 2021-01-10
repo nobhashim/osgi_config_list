@@ -98,7 +98,7 @@ config_details.sort_by {|pid| pid.values_at("title", "pid")}.each_with_index do 
   <p>Description = <%= eh(config["description"]) %></p>
   
   <%
-    properties = config["properties"]
+    properties = config["properties"] || {}
     properties.each_pair do |param_key, param|
   %>
     <section>
